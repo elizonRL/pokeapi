@@ -13,6 +13,9 @@ app.post('/team/pokemons', (req, res) =>{
 app.get('/team', (req, res)=>{
     res.status(200).send('hello wordl!');
 });
+app.post('/login', (req, res)=>{
+
+});
 
 app.delete('/team/pokemons/:pokeid', ()=>{
     res.status(200).send('hello wordl!');
