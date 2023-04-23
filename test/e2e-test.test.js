@@ -11,6 +11,5 @@ describe('suite de prueba e2e para el curso', ()=>{
             chai.assert.equal(res.text, 'hello wordl!');
             done();
         });
-
     });
 });
