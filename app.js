@@ -29,3 +29,5 @@ app.put('/team', (req, res) => {
 app.listen(port, ()=>{
     console.log("Server Started at port 3000");
 });
+
+exports.app = app;
