@@ -15,6 +15,7 @@ app.post('/team/pokemons', (req, res) =>{
 app.get('/team', passport.authenticate('jwt', {session: false}), (req, res)=>{
     res.status(200).send('hello wordl!');
 });
+
 app.post('/login', (req, res)=>{
     res.status(200).json({
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.zX5MPQtbjoNAS7rpsx_hI7gqGIlXOQq758dIqyBVxxY'
