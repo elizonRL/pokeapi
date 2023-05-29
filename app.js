@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express(); 
 const passport = require('passport');
+const jwt = require('jsonwebtoken')
+const usersControlles = require('./controlles/users');
 require('./auth')(passport);
 const port = 3000;
 app.get('/', (req, res) =>{
@@ -17,9 +19,16 @@ app.get('/team', passport.authenticate('jwt', {session: false}), (req, res)=>{
 });
 
 app.post('/login', (req, res)=>{
-    res.status(200).json({
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.zX5MPQtbjoNAS7rpsx_hI7gqGIlXOQq758dIqyBVxxY'
-    })
+    usersControlles.checkUserCredentials(req.body.user, req.body.password, (err, result)=>{
+        if(!result){
+            return res.status(401).json({message: 'Invalid Credentials'});
+        }
+        const token = jwt.sign({userId: req.body.user});
+        res.status(200).json({
+            token: token
+        });
+    });
+    
 });
 
 app.delete('/team/pokemons/:pokeid', ()=>{
