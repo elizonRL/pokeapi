@@ -1,10 +1,17 @@
 const express = require('express');
-const app = express(); 
 const passport = require('passport');
-const jwt = require('jsonwebtoken')
-const usersControlles = require('./controlles/users');
+const jwt = require('jsonwebtoken');
+const bodyParse = require('body-parser');
+
+const usersController = require('./controlles/users');
+usersController.registerUser('elizon', '1234');
+
 require('./auth')(passport);
 const port = 3000;
+
+const app = express();
+app.use(bodyParse.json());
+
 app.get('/', (req, res) =>{
      res.status(200).send('hello wordl!');
 });
@@ -19,8 +26,13 @@ app.get('/team', passport.authenticate('jwt', {session: false}), (req, res)=>{
 });
 
 app.post('/login', (req, res)=>{
-    usersControlles.checkUserCredentials(req.body.user, req.body.password, (err, result)=>{
-        if(!result){
+    if(!req.body){
+        return res.status(400).json({message: 'missing data'});
+    }else if(!req.body.user || !req.body.password){
+        return res.status(400).json({message: 'missing data'});
+    }
+    usersController.checkUserCredentials(req.body.user, req.body.password, (err, result)=>{
+        if(err || !result){
             return res.status(401).json({message: 'Invalid Credentials'});
         }
         const token = jwt.sign({userId: req.body.user});
