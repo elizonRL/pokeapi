@@ -5,7 +5,7 @@ const usersDatabase = {};
 
 const registerUser = (userName, password)=>{
     //guarda en la base de datos nustro usuario
-    let hashedPwd = Crypto.hashPasswordSync(password)
+    let hashedPwd = crypto.hashPasswordSync(password);
     usersDatabase[uuid.v4()]={
         userName: userName, 
         password:hashedPwd
