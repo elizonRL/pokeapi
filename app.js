@@ -10,8 +10,6 @@ const app = express();
 app.use(bodyParse.json());
 
 app.get('/', (req, res) =>{
-
-
      res.status(200).send('hello wordl!');
 });
 
