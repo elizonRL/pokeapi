@@ -3,12 +3,19 @@ const router = express.Router();
 const passport = require('passport');
 require('../auth')(passport);
 
+const teamsController = require('../controlles/teams');
+const { getUser } = require('../controlles/users');
+
 router.route('/')
-    .get(passport.authenticate('jwt', {session: false}), (req, res)=>{
-        res.status(200).send('hello wordl!');
+    .get(passport.authenticate('jwt', {session: false}), (req, res, next)=>{
+        let user = getUser(req.user.userId);
+        res.status(200).json({
+            trainer: user.userName,
+            team: teamsController.getTeamOfUser(req.user.userId)
+        });
     })
     .put((req, res) => {
-        res.status(200).send('hello wordl!');
+        teamsController.setTeam(req.body.user, req.body.team)
     })
 router.route('/pokemons')
     .post((req, res) =>{
