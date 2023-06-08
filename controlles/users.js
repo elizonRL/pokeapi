@@ -1,5 +1,5 @@
 const uuid = require('uuid');
-const crypto = require('../crypto.js');
+const crypto = require('../crypto');
 const teams = require('./teams');
 const usersDatabase = {};
 
