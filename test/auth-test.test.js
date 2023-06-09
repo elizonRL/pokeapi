@@ -4,7 +4,12 @@ const chaiHtttp = require('chai-http');
 chai.use(chaiHtttp);
 
 const app = require('../app').app;
+const usersController = require('../controlles/users');
 
+before((done)=>{
+    usersController.registerUser('elizon', '1234');
+    done();
+})
 describe('suite de Prueba de Auth', ()=>{
     it('Should return 401', (done)=>{
         chai.request(app)
@@ -52,3 +57,8 @@ describe('suite de Prueba de Auth', ()=>{
         });
     })
 }); 
+
+after((done)=>{
+    usersController.cleanUpUser();
+    done();
+})
