@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-require('../auth')(passport);
+require('../tools/auth')(passport);
 const axios = require('axios');
 
-const teamsController = require('../controlles/teams');
-const { getUser } = require('../controlles/users');
+const teamsController = require('./teams.controller');
+const { getUser } = require('../auth/users.auth');
 
 router.route('/')
     .get(passport.authenticate('jwt', {session: false}),

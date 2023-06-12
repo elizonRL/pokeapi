@@ -3,9 +3,9 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const app = require('../app').app;
-const usersController = require('../controlles/users');
-const teamsController = require('../controlles/teams');
+const app = require('../../app').app;
+const usersController = require('../../auth/users.auth');
+const teamsController = require('../teams.controller');
 
 
 before((done)=>{

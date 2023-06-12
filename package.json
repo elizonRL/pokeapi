@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "node node_modules/mocha/bin/mocha"
+    "test": "node node_modules/mocha/bin/mocha teams/**/*.test.js auth/**/*.test.js tools/**/*.test.js"
   },
   "author": "",
   "license": "ISC",
