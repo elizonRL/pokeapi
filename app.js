@@ -1,5 +1,5 @@
 const express = require('express');
-const bodyParse = require('body-parser');
+const middlewares = require('./middlewares');
 
 const port = 3000;
 
@@ -7,7 +7,7 @@ const authRoutes = require('./auth/auth.router').router;
 const teamsRoutes = require('./teams/teams.router').router;
 
 const app = express();
-app.use(bodyParse.json());
+middlewares.setupMiddlewares(app);
 
 app.get('/', (req, res) =>{
      res.status(200).send('hello wordl!');

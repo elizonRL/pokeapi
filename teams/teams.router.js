@@ -1,14 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const passport = require('passport');
-require('../tools/auth')(passport);
 const axios = require('axios');
 
 const teamsController = require('./teams.controller');
 const { getUser } = require('../auth/users.auth');
 
 router.route('/')
-    .get(passport.authenticate('jwt', {session: false}),
+    .get(
      (req, res, next)=>{
         let user = getUser(req.user.userId);
         res.status(200).json({
@@ -16,13 +14,13 @@ router.route('/')
             team: teamsController.getTeamOfUser(req.user.userId)
         });
     })
-    .put(passport.authenticate('jwt', {session: false}),
+    .put(
         (req, res) => {
         teamsController.setTeam(req.user.userId, req.body.team)
         res.status(200).send();
     })
 router.route('/pokemons')
-    .post(passport.authenticate('jwt', {session: false}),
+    .post(
         (req, res) =>{
             let pokemonNAme = req.body.name;
             console.log('calling pokeapi');
@@ -48,7 +46,7 @@ router.route('/pokemons')
         
     })
 router.route('/pokemons/:pokeid')
-    .delete(passport.authenticate('jwt', {session: false}),
+    .delete(
         (req , res)=>{
         teamsController.deletePokemonAt(req.user.userId, req.params.pokeid);
         res.status(200).send();
