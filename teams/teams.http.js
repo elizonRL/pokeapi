@@ -29,13 +29,13 @@ const addPokemonstoTeam = async (req, res) =>{
         name: pokemonNAme,
         pokedexNumber: pokeApiResponse.data.id
     }
-    let [errorApp, response] = await to(teamsController.addPokemons(req.user.userId, pokemon));
+    let [errorAdd, response] = await to(teamsController.addPokemons(req.user.userId, pokemon));
        
-    if(errorApp){
+    if(errorAdd){
         return res.status(400).json({message: 'you have already 6 pokemon'}); 
     }
     res.status(201).json(pokemon);  
-
+    
 }
 
 const deletePokemonFromTeam = (req , res)=>{

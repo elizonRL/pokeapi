@@ -102,7 +102,7 @@ describe('suite de Prueba Teams', ()=>{
                     .end((err, res)=>{
                         chai.assert.equal(res.statusCode, 200)
                         chai.assert.equal(res.body.trainer, 'elizon')
-                        chai.assert.equal(res.body.team.length, team.length -1)
+                        chai.assert.equal(res.body.team.length, team.length-1)
                         done()
                     })
                     
@@ -147,7 +147,5 @@ describe('suite de Prueba Teams', ()=>{
 });
 
 after(async ()=>{
-
     await usersController.cleanUpUser();
-    
 })
