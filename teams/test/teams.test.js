@@ -110,9 +110,44 @@ describe('suite de Prueba Teams', ()=>{
             });  
         });
     });
+
+    it('Should return the error for the 6 pokemon', (done)=>{
+        let team =[
+            {name:'Charizard'},
+            {name:'Blastoise'},
+            {name:'pikachu'},
+            {name:'charmander'},
+            {name:'bulbasaur'},
+            {name:'Pidgeotto'}];
+        chai.request(app)
+        .post('/auth/login')
+        .set('content-type', 'application/json')
+        .send({user: 'elizon', password: '1234'})
+        .end((err, res)=>{
+            let token = res.body.token
+            chai.assert.equal(res.statusCode, 200);
+            chai.request(app)
+            .put('/teams')
+            .send({
+                team : team
+            })
+            .set('Authorization', `JWT ${token}`)
+            .end((err, res)=>{
+                chai.request(app)
+                .post('/teams/pokemons')
+                .send({name: 'venusaur'})
+                .set('Authorization', `JWT ${token}`)
+                .end((err, res)=>{
+                    chai.assert.equal(res.statusCode, 400);
+                    done()
+                });
+            });  
+        });
+    });
 });
 
-after((done)=>{
-    usersController.cleanUpUser();
-    done();
+after(async ()=>{
+
+    await usersController.cleanUpUser();
+    
 })

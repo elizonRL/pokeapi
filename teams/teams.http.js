@@ -2,12 +2,14 @@ const axios = require('axios');
 
 const teamsController = require('./teams.controller');
 const { getUser } = require('../auth/users.auth');
+const {to} = require('../tools/to');
 
-const getTeamFromUser = (req, res)=>{
+const getTeamFromUser = async (req, res)=>{
     let user = getUser(req.user.userId);
+    let team = await teamsController.getTeamOfUser(req.user.userId);
         res.status(200).json({
             trainer: user.userName,
-            team: teamsController.getTeamOfUser(req.user.userId)
+            team: team
         });
 }
 
@@ -16,30 +18,26 @@ const setTeamToUser = (req, res) => {
     res.status(200).send();
 }
 
-const addPokemonstoTeam = (req, res) =>{
+const addPokemonstoTeam = async (req, res) =>{
     let pokemonNAme = req.body.name;
-    console.log('calling pokeapi');
-axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonNAme.toLowerCase()}`)
-    .then(function (response) {
-        // handle success
-        console.log(response.data.id);
-        let pokemon = { 
-            name: pokemonNAme,
-            pokedexNumber: response.data.id
-        }
-        teamsController.addPokemons(req.user.userId, pokemon)
-        res.status(201).json(pokemon);
-    })
-    .catch(function (error) {
-        // handle error
-        res.status(400).json({message: error})
-        console.log(error);
-    })
-    .finally(function () {
-        // always executed
-    });
+
+    let [pokeApiErr, pokeApiResponse] = await to(axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonNAme.toLowerCase()}`));
+    if(pokeApiErr){
+        return res.status(400).json({message: pokeApiErr}); 
+    }
+    let pokemon = { 
+        name: pokemonNAme,
+        pokedexNumber: pokeApiResponse.data.id
+    }
+    let [errorApp, response] = await to(teamsController.addPokemons(req.user.userId, pokemon));
+       
+    if(errorApp){
+        return res.status(400).json({message: 'you have already 6 pokemon'}); 
+    }
+    res.status(201).json(pokemon);  
 
 }
+
 const deletePokemonFromTeam = (req , res)=>{
     teamsController.deletePokemonAt(req.user.userId, req.params.pokeid);
     res.status(200).send();
