@@ -19,11 +19,12 @@ const setTeamToUser = (req, res) => {
 }
 
 const addPokemonstoTeam = async (req, res) =>{
-    let pokemonNAme = req.body.name;
+    /*let pokemonNAme = req.body.name;
 
-    let [pokeApiErr, pokeApiResponse] = await to(axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonNAme.toLowerCase()}`));
-    if(pokeApiErr){
-        return res.status(400).json({message: pokeApiErr}); 
+    let [pokeApiError, pokeApiResponse] = 
+        await to(axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonNAme.toLowerCase()}`))
+    if(pokeApiError){
+        return res.status(400).json({message: pokeApiError}); 
     }
     let pokemon = { 
         name: pokemonNAme,
@@ -34,9 +35,25 @@ const addPokemonstoTeam = async (req, res) =>{
     if(errorAdd){
         return res.status(400).json({message: 'you have already 6 pokemon'}); 
     }
-    res.status(201).json(pokemon);  
-    
+    res.status(201).json(pokemon);  */
+    let pokemonName = req.body.name;
+    let [pokeApiError, pokeApiResponse] = 
+        await to(axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`))
+    if (pokeApiError) {
+        return res.status(400).json({message: pokeApiError});
+    }
+    let pokemon = {
+        name: pokemonName, 
+        pokedexNumber: pokeApiResponse.data.id
+    }
+    let [errorAdd, response] = await to(teamsController.addPokemon(req.user.userId, pokemon));
+
+    if (errorAdd) {
+        return res.status(400).json({message: 'You have already 6 pokemon'});
+    }
+    res.status(201).json(pokemon);
 }
+    
 
 const deletePokemonFromTeam = (req , res)=>{
     teamsController.deletePokemonAt(req.user.userId, req.params.pokeid);

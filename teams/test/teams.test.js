@@ -47,7 +47,7 @@ describe('suite de Prueba Teams', ()=>{
             });  
         });
     });
-    it('Should return the pokedex Nomber', (done)=>{
+    it('Should return the pokedex Nomber', ()=>{
         let pokemonNAme ='Bulbasaur';
         chai.request(app)
         .post('/auth/login')
@@ -70,7 +70,7 @@ describe('suite de Prueba Teams', ()=>{
                     chai.assert.equal(res.body.team.length, 1);
                     chai.assert.equal(res.body.team[0].name, pokemonNAme);
                     chai.assert.equal(res.body.team[0].pokedexNumber, 1);
-                    done();
+                    
                 });
             });  
         });
@@ -103,7 +103,7 @@ describe('suite de Prueba Teams', ()=>{
                         chai.assert.equal(res.statusCode, 200)
                         chai.assert.equal(res.body.trainer, 'elizon')
                         chai.assert.equal(res.body.team.length, team.length-1)
-                        done()
+                        done();
                     })
                     
                 });
@@ -111,7 +111,7 @@ describe('suite de Prueba Teams', ()=>{
         });
     });
 
-    it('Should return the error for the 6 pokemon', (done)=>{
+    it('Should return the error for the 6 pokemon', ()=>{
         let team =[
             {name:'Charizard'},
             {name:'Blastoise'},
@@ -139,7 +139,7 @@ describe('suite de Prueba Teams', ()=>{
                 .set('Authorization', `JWT ${token}`)
                 .end((err, res)=>{
                     chai.assert.equal(res.statusCode, 400);
-                    done()
+                    
                 });
             });  
         });
