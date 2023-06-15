@@ -42,16 +42,25 @@ const addPokemonstoTeam = async (req, res) =>{
     if (pokeApiError) {
         return res.status(400).json({message: pokeApiError});
     }
+    
     let pokemon = {
         name: pokemonName, 
         pokedexNumber: pokeApiResponse.data.id
     }
-    let [errorAdd, response] = await to(teamsController.addPokemon(req.user.userId, pokemon));
+
+    let [errorAdd , response]=  await to (teamsController.addPokemon(req.user.userId, pokemon));
+    
+   if (errorAdd !== null) {
+      return res.status(400).json({message: 'You have already 6 pokemons'});
+    }
+    res.status(201).json(pokemon);
+   
+   /* let [errorAdd, response] = await to(teamsController.addPokemon(req.user.userId, pokemon));
 
     if (errorAdd) {
         return res.status(400).json({message: 'You have already 6 pokemon'});
-    }
-    res.status(201).json(pokemon);
+    } 
+    res.status(201).json(pokemon);*/
 }
     
 

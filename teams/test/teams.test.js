@@ -12,9 +12,9 @@ before((done)=>{
     usersController.registerUser('elizon', '1234');
     done();
 })
-afterEach((done)=>{
-    teamsController.cleanUpTeam();
-    done();
+afterEach( (done)=>{
+   teamsController.cleanUpTeam();
+   done()
 })
 describe('suite de Prueba Teams', ()=>{
     it('Should return the team of the given user', (done)=>{
@@ -47,7 +47,7 @@ describe('suite de Prueba Teams', ()=>{
             });  
         });
     });
-    it('Should return the pokedex Nomber', ()=>{
+    it('Should return the pokedex Nomber', (done)=>{
         let pokemonNAme ='Bulbasaur';
         chai.request(app)
         .post('/auth/login')
@@ -70,7 +70,7 @@ describe('suite de Prueba Teams', ()=>{
                     chai.assert.equal(res.body.team.length, 1);
                     chai.assert.equal(res.body.team[0].name, pokemonNAme);
                     chai.assert.equal(res.body.team[0].pokedexNumber, 1);
-                    
+                    done();
                 });
             });  
         });
@@ -111,41 +111,40 @@ describe('suite de Prueba Teams', ()=>{
         });
     });
 
-    it('Should return the error for the 6 pokemon', ()=>{
-        let team =[
-            {name:'Charizard'},
-            {name:'Blastoise'},
-            {name:'pikachu'},
-            {name:'charmander'},
-            {name:'bulbasaur'},
-            {name:'Pidgeotto'}];
+    it('should not be able to add pokemon if you already have 6', (done) => {
+        let team = [
+            {name: 'Charizard'}, 
+            {name: 'Blastoise'}, 
+            {name: 'Pikachu'},
+            {name: 'Charizard'}, 
+            {name: 'Blastoise'}, 
+            {name: 'Pikachu'}];
         chai.request(app)
-        .post('/auth/login')
-        .set('content-type', 'application/json')
-        .send({user: 'elizon', password: '1234'})
-        .end((err, res)=>{
-            let token = res.body.token
-            chai.assert.equal(res.statusCode, 200);
-            chai.request(app)
-            .put('/teams')
-            .send({
-                team : team
-            })
-            .set('Authorization', `JWT ${token}`)
-            .end((err, res)=>{
+            .post('/auth/login')
+            .set('content-type', 'application/json')
+            .send({user: 'elizon', password: '1234'})
+            .end((err, res) => {
+                let token = res.body.token;
+                //Expect valid login
+                chai.assert.equal(res.statusCode, 200);
                 chai.request(app)
-                .post('/teams/pokemons')
-                .send({name: 'venusaur'})
-                .set('Authorization', `JWT ${token}`)
-                .end((err, res)=>{
-                    chai.assert.equal(res.statusCode, 400);
-                    
-                });
-            });  
-        });
+                    .put('/teams')
+                    .send({team: team})
+                    .set('Authorization', `JWT ${token}`)
+                    .end((err, res) => {
+                        chai.request(app)
+                            .post('/teams/pokemons')
+                            .send({name: 'Vibrava'})
+                            .set('Authorization', `JWT ${token}`)
+                            .end((err, res) => {
+                                chai.assert.equal(res.statusCode, 400);
+                                done();
+                            });
+                    });
+            });
     });
 });
 
-after(async ()=>{
-    await usersController.cleanUpUser();
+after( async ()=>{
+   await usersController.cleanUpUser(); 
 })
