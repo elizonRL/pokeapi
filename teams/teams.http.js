@@ -19,23 +19,7 @@ const setTeamToUser = (req, res) => {
 }
 
 const addPokemonstoTeam = async (req, res) =>{
-    /*let pokemonNAme = req.body.name;
 
-    let [pokeApiError, pokeApiResponse] = 
-        await to(axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonNAme.toLowerCase()}`))
-    if(pokeApiError){
-        return res.status(400).json({message: pokeApiError}); 
-    }
-    let pokemon = { 
-        name: pokemonNAme,
-        pokedexNumber: pokeApiResponse.data.id
-    }
-    let [errorAdd, response] = await to(teamsController.addPokemons(req.user.userId, pokemon));
-       
-    if(errorAdd){
-        return res.status(400).json({message: 'you have already 6 pokemon'}); 
-    }
-    res.status(201).json(pokemon);  */
     let pokemonName = req.body.name;
     let [pokeApiError, pokeApiResponse] = 
         await to(axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`))
@@ -55,12 +39,6 @@ const addPokemonstoTeam = async (req, res) =>{
     }
     res.status(201).json(pokemon);
    
-   /* let [errorAdd, response] = await to(teamsController.addPokemon(req.user.userId, pokemon));
-
-    if (errorAdd) {
-        return res.status(400).json({message: 'You have already 6 pokemon'});
-    } 
-    res.status(201).json(pokemon);*/
 }
     
 
