@@ -1,5 +1,6 @@
 const express = require('express');
 const middlewares = require('./middlewares');
+require('./database')
 
 const port = 3000;
 

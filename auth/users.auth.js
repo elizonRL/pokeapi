@@ -1,8 +1,10 @@
 const uuid = require('uuid');
 const crypto = require('../tools/crypto');
 const teams = require('../teams/teams.controller');
-let usersDatabase = {};
+const mongoose = require('mongoose');
+const userModel = mongoose.model('userModel', { userName: String, password: String, userId: String });
 
+let usersDatabase = {};
 const cleanUpUser = ()=>{
     usersDatabase = {};
 }
@@ -11,10 +13,12 @@ const registerUser = (userName, password)=>{
     return new Promise(async(resolve, reject)=>{
         let hashedPwd = crypto.hashPasswordSync(password);
         let userId = uuid.v4;
-        usersDatabase[userId]={
+        let newUser = new userModel({
+            userId: userId, 
             userName: userName, 
             password:hashedPwd
-        }
+        });
+        await newUser.save();
         await teams.bootstrapTeam(userId);
         resolve();
     });

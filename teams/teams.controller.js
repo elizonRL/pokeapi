@@ -1,5 +1,6 @@
 let teamsDatabase = {};
-
+const mongoose = require('mongoose');
+const teamsModel = mongoose.model('teamsModel', {userId: String, team: [] });
 const cleanUpTeam = () =>{
     return new Promise((resolve, reject)=>{
 
@@ -12,6 +13,8 @@ const cleanUpTeam = () =>{
 }
 const bootstrapTeam = (userId) =>{
     return new Promise((resolve , reject)=>{
+        let newTeam = new teamsModel({userId: userId, team: []});
+        newTeam.save();
         teamsDatabase[userId] = [];
         resolve();
     })
