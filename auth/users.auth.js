@@ -21,6 +21,8 @@ const registerUser = (userName, password)=>{
     
 }
 
+registerUser('elizon', '1234');
+
 const getUser = (userId) =>{
     return new Promise((resolve, reject)=>{
         
@@ -29,25 +31,37 @@ const getUser = (userId) =>{
 }
 
 const getUserIdFromUserName = (userName)=>{
-    for(let user in usersDatabase){
-        if(usersDatabase[user].userName==userName){
-            let userData = usersDatabase[user];
-            userData.userId = user;
-            return userData;
+    return new Promise ((resolve, reject)=>{
+        for(let user in usersDatabase){
+            if(usersDatabase[user].userName==userName){
+                let userData = usersDatabase[user];
+                userData.userId = user;
+                resolve(userData);
+            }
         }
-    }
+    })
 }
 
-const checkUserCredentials = (userName, password, done)=>{
-    //comprueba los credenciales de nuetros usuarios
-    let user = getUserIdFromUserName(userName);
-    if(user){
-        console.log(user);
-        crypto.comparePassword(password, user.password, done);
-    }else{
-        done('missing user');
-    }
-};
+const checkUserCredentials = (userName, password)=>{
+
+    return new Promise(async (resolve, reject)=>{
+         //comprueba los credenciales de nuetros usuarios
+        let user = await getUserIdFromUserName(userName);
+        if(user){
+            console.log(user);
+            crypto.comparePassword(password, user.password, (err, result)=>{
+                if(err){
+                    reject(err);
+                }else{
+                    resolve(result);
+                }
+            });
+        }else{
+           reject('missing user');
+        }
+    });
+
+}
 
 exports.registerUser = registerUser;
 exports.checkUserCredentials = checkUserCredentials;
