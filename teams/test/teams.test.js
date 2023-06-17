@@ -9,8 +9,9 @@ const teamsController = require('../teams.controller');
 
 
 before((done)=>{
-    usersController.registerUser('elizon', '1234');
-    done();
+     usersController.registerUser('elizon', '1234');
+     done();
+    
 })
 afterEach( (done)=>{
    teamsController.cleanUpTeam();

@@ -6,9 +6,9 @@ chai.use(chaiHtttp);
 const app = require('../../app').app;
 const usersController = require('../users.auth');
 
-before((done)=>{
-    usersController.registerUser('elizon', '1234');
-    done();
+before(async ()=>{
+     await usersController.registerUser('elizon', '1234');
+    
 })
 describe('suite de Prueba de Auth', ()=>{
     it('Should return 401', (done)=>{

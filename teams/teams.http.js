@@ -5,7 +5,7 @@ const { getUser } = require('../auth/users.auth');
 const {to} = require('../tools/to');
 
 const getTeamFromUser = async (req, res)=>{
-    let user = getUser(req.user.userId);
+    let user = await getUser(req.user.userId);
     let team = await teamsController.getTeamOfUser(req.user.userId);
         res.status(200).json({
             trainer: user.userName,

@@ -8,17 +8,24 @@ const cleanUpUser = ()=>{
 }
 const registerUser = (userName, password)=>{
     //guarda en la base de datos nustro usuario
-    let hashedPwd = crypto.hashPasswordSync(password);
-    let userId = uuid.v4;
-    usersDatabase[userId]={
-        userName: userName, 
-        password:hashedPwd
-    }
-    teams.bootstrapTeam(userId);
+    return new Promise(async(resolve, reject)=>{
+        let hashedPwd = crypto.hashPasswordSync(password);
+        let userId = uuid.v4;
+        usersDatabase[userId]={
+            userName: userName, 
+            password:hashedPwd
+        }
+        await teams.bootstrapTeam(userId);
+        resolve();
+    });
+    
 }
 
 const getUser = (userId) =>{
-    return usersDatabase[userId];
+    return new Promise((resolve, reject)=>{
+        
+        resolve(usersDatabase[userId]);
+    })
 }
 
 const getUserIdFromUserName = (userName)=>{

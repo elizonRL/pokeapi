@@ -11,7 +11,11 @@ const cleanUpTeam = () =>{
     
 }
 const bootstrapTeam = (userId) =>{
-    teamsDatabase[userId] = [];
+    return new Promise((resolve , reject)=>{
+        teamsDatabase[userId] = [];
+        resolve();
+    })
+   
 }
 
 const getTeamOfUser = (userId)=>{
