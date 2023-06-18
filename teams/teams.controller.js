@@ -1,52 +1,79 @@
-let teamsDatabase = {};
+
 const mongoose = require('mongoose');
 const teamsModel = mongoose.model('teamsModel', {userId: String, team: [] });
-const cleanUpTeam = () =>{
-    return new Promise((resolve, reject)=>{
+const {to} = require('../tools/to');
 
-        for(user in teamsDatabase){
-            teamsDatabase[user] = [];
-        }
+
+const cleanUpTeam = () =>{
+    return new Promise(async(resolve, reject)=>{
+        await teamsModel.deleteMany({}).exec();
         resolve();
     })
     
 }
 const bootstrapTeam = (userId) =>{
-    return new Promise((resolve , reject)=>{
+    return new Promise(async(resolve , reject)=>{
         let newTeam = new teamsModel({userId: userId, team: []});
-        newTeam.save();
-        teamsDatabase[userId] = [];
+        await newTeam.save();
+        
         resolve();
     })
-   
 }
 
 const getTeamOfUser = (userId)=>{
-    return new Promise((resolve, reject)=>{
-        resolve(teamsDatabase[userId]);
-    });
+    return new Promise(async (resolve, reject) => {
+        let[err, dbTeam] = await to(teamsModel.findOne({userId: userId}).exec());
 
+        if(err){
+           return reject(err);
+        }
+        resolve(dbTeam.team);
+    });
 }
 
 const addPokemon = (userId, pokemon)=>{
-    return new Promise((resolve, reject) => {
-        if(teamsDatabase[userId].length === 6){
+    return new Promise(async (resolve, reject) => {
+        let[err, dbTeam] = await to(teamsModel.findOne({userId: userId}).exec());
+    
+        if(err){
+          return reject(err);
+        }
+        if(dbTeam.team.length === 6){
             reject();
         }else{
-            teamsDatabase[userId].push(pokemon);
+           dbTeam.team.push(pokemon);
+           await dbTeam.save();
             resolve();
         }
     });
 }
 
 const deletePokemonAt = (userId , index)=>{
-    if(teamsDatabase[userId][index]){
-        teamsDatabase[userId].splice(index, 1);
-    }
+    return new Promise( async (resolve, reject) =>{
+        let[err,dbTeam] = await to(teamsModel.findOne({userId: userId}).exec());
+
+        if(err || !dbTeam){
+            return reject(err);
+        }
+    
+        if(dbTeam.team[index]){
+            dbTeam.team.splice(index, 1);
+        }
+        await dbTeam.save();
+        resolve();
+    })
 }
 
 const setTeam = (userId, team)=>{
-    teamsDatabase[userId]= team;
+    return new Promise(async (resolve, reject) => {
+        let [err, dbTeam] = await to(teamsModel.findOne({userId: userId}).exec());
+        if (err || !dbTeam) {
+            return reject(err);
+        }
+        dbTeam.team = team
+        await dbTeam.save();
+        resolve();
+    })
 }
 
 exports.bootstrapTeam = bootstrapTeam;

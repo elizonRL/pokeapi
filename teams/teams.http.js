@@ -13,8 +13,8 @@ const getTeamFromUser = async (req, res)=>{
         });
 }
 
-const setTeamToUser = (req, res) => {
-    teamsController.setTeam(req.user.userId, req.body.team)
+const setTeamToUser = async (req, res) => {
+     await teamsController.setTeam(req.user.userId, req.body.team)
     res.status(200).send();
 }
 
@@ -42,8 +42,8 @@ const addPokemonstoTeam = async (req, res) =>{
 }
     
 
-const deletePokemonFromTeam = (req , res)=>{
-    teamsController.deletePokemonAt(req.user.userId, req.params.pokeid);
+const deletePokemonFromTeam = async (req , res)=>{
+    await teamsController.deletePokemonAt(req.user.userId, req.params.pokeid);
     res.status(200).send();
 }
 

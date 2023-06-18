@@ -5,11 +5,16 @@ chai.use(chaiHtttp);
 
 const app = require('../../app').app;
 const usersController = require('../users.auth');
+const teamsController = require('../../teams/teams.controller');
 
 before(async ()=>{
      await usersController.registerUser('elizon', '1234');
     
 })
+afterEach(async () => {
+    await usersController.cleanUpUser();
+    await teamsController.cleanUpTeam();
+});
 describe('suite de Prueba de Auth', ()=>{
     it('Should return 401', (done)=>{
         chai.request(app)

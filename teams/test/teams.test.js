@@ -8,14 +8,15 @@ const usersController = require('../../auth/users.auth');
 const teamsController = require('../teams.controller');
 
 
-before((done)=>{
-     usersController.registerUser('elizon', '1234');
-     done();
+beforeEach(async()=>{
+     await usersController.registerUser('elizon', '1234');
+     
     
 })
-afterEach( (done)=>{
-   teamsController.cleanUpTeam();
-   done()
+afterEach(async ()=>{
+   await teamsController.cleanUpTeam();
+   await usersController.cleanUpUser();
+   
 })
 describe('suite de Prueba Teams', ()=>{
     it('Should return the team of the given user', (done)=>{
@@ -145,7 +146,3 @@ describe('suite de Prueba Teams', ()=>{
             });
     });
 });
-
-after( async ()=>{
-   await usersController.cleanUpUser(); 
-})

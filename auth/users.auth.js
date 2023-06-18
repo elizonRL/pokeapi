@@ -2,11 +2,17 @@ const uuid = require('uuid');
 const crypto = require('../tools/crypto');
 const teams = require('../teams/teams.controller');
 const mongoose = require('mongoose');
+const {to} = require('../tools/to');
 const userModel = mongoose.model('userModel', { userName: String, password: String, userId: String });
 
-let usersDatabase = {};
+
 const cleanUpUser = ()=>{
-    usersDatabase = {};
+    return new Promise(async(resolve, reject)=>{
+
+        await userModel.deleteMany({}).exec();
+        resolve();
+    })
+    
 }
 const registerUser = (userName, password)=>{
     //guarda en la base de datos nustro usuario
@@ -28,21 +34,22 @@ const registerUser = (userName, password)=>{
 registerUser('elizon', '1234');
 
 const getUser = (userId) =>{
-    return new Promise((resolve, reject)=>{
-        
-        resolve(usersDatabase[userId]);
+    return new Promise(async (resolve, reject)=>{
+        let [err, result] = await to(userModel.findOne({userId: userId}).exec());
+        if(err){
+            reject(err);
+        } 
+        resolve(result);
     })
 }
 
 const getUserIdFromUserName = (userName)=>{
-    return new Promise ((resolve, reject)=>{
-        for(let user in usersDatabase){
-            if(usersDatabase[user].userName==userName){
-                let userData = usersDatabase[user];
-                userData.userId = user;
-                resolve(userData);
-            }
-        }
+    return new Promise (async (resolve, reject)=>{
+        let [err, result] = await to(userModel.findOne({userName: userName}).exec());
+        if(err){
+            reject(err);
+        } 
+        resolve(result);
     })
 }
 
